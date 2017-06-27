@@ -3,7 +3,7 @@
   "description": "Monitors Glance cluster using Prometheus. Shows overall cluster processes and usage.",
   "editable": true,
   "gnetId": 315,
-  "graphTooltip": 0,
+  "graphTooltip": 1,
   "hideControls": false,
   "id": null,
   "links": [],
@@ -1355,6 +1355,6 @@
   },
   "timezone": "browser",
   "title": "Glance",
-  "version": 1
+  "version": 2
 }
 {% endraw %}
