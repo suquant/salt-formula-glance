@@ -66,7 +66,7 @@ workers = {{ server.workers }}
 # Allow access to version 2 of glance api
 #enable_v2_api = True
 
-filesystem_store_datadir=/var/lib/glance/images/
+filesystem_store_datadir = {{ server.get('filesystem_store_datadir', '/var/lib/glance/images/') }}
 
 # Return the URL that references where the data is stored on
 # the backend storage system.  For example, if using the
@@ -599,7 +599,7 @@ stores = {{ server.storage.engine }}
 
 # Directory that the Filesystem backend store
 # writes image data to
-filesystem_store_datadir = /var/lib/glance/images/
+filesystem_store_datadir = {{ server.get('filesystem_store_datadir', '/var/lib/glance/images/') }}
 
 # A list of directories where image data can be stored.
 # This option may be specified multiple times for specifying multiple store

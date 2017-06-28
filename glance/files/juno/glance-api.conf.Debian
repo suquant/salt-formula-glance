@@ -498,7 +498,7 @@ stores = {{ server.storage.engine }}
 
 # Directory that the Filesystem backend store
 # writes image data to
-filesystem_store_datadir = /var/lib/glance/images/
+filesystem_store_datadir = {{ server.get('filesystem_store_datadir', '/var/lib/glance/images/') }}
 
 # A list of directories where image data can be stored.
 # This option may be specified multiple times for specifying multiple store

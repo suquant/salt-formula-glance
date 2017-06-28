@@ -2337,7 +2337,7 @@ cinder_os_region_name = {{ server.identity.region }}
 #
 #  (string value)
 #filesystem_store_datadir = /var/lib/glance/images
-filesystem_store_datadir=/var/lib/glance/images/
+filesystem_store_datadir = {{ server.get('filesystem_store_datadir', '/var/lib/glance/images/') }}
 
 #
 # List of directories and their priorities to which the filesystem
