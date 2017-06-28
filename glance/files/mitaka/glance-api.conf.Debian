@@ -64,7 +64,7 @@ api_limit_max = {{ server.api_limit_max|default('1000') }}
 # properties. Revealing storage location can be a security risk, so
 # use this setting with caution! (boolean value)
 #show_image_direct_url = false
-show_image_direct_url = true
+show_image_direct_url = {{ server.get('show_image_direct_url', True)|lower }}
 
 # Whether to include the backend image locations in image properties.
 # For example, if using the file system store a URL of

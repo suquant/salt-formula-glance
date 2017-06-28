@@ -98,7 +98,7 @@ workers = 8
 # be returned to the user in the 'direct_url' meta-data field.
 # The default value is false.
 #show_image_direct_url = False
-show_image_direct_url = True
+show_image_direct_url = {{ server.get('show_image_direct_url', True)|lower }}
 
 # Send headers containing user and tenant information when making requests to
 # the v1 glance registry. This allows the registry to function as if a user is

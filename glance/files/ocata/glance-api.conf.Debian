@@ -294,7 +294,7 @@ api_limit_max = {{ server.api_limit_max|default('1000') }}
 #
 #  (boolean value)
 #show_image_direct_url = false
-show_image_direct_url = true
+show_image_direct_url = {{ server.get('show_image_direct_url', True)|lower }}
 
 # DEPRECATED:
 # Show all image locations when returning an image.
