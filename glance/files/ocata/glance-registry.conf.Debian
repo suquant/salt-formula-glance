@@ -1149,7 +1149,7 @@ max_overflow = 30
 #use_tpool = false
 
 [glance_store]
-filesystem_store_datadir = /var/lib/glance/images
+filesystem_store_datadir = {{ server.get('filesystem_store_datadir', '/var/lib/glance/images/') }}
 
 swift_store_endpoint_type = {{ server.identity.get('endpoint_type', 'publicURL') }}
 

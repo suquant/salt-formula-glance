@@ -1150,7 +1150,7 @@ cinder_os_region_name = {{ server.identity.region }}
 # Directory to which the Filesystem backend store writes images.
 # (string value)
 #filesystem_store_datadir = /var/lib/glance/images
-filesystem_store_datadir=/var/lib/glance/images/
+filesystem_store_datadir = {{ server.get('filesystem_store_datadir', '/var/lib/glance/images/') }}
 
 # List of directories and its priorities to which the Filesystem
 # backend store writes images. (multi valued)
