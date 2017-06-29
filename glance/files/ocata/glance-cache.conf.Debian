@@ -1371,7 +1371,9 @@ log_file = /var/log/glance/image-cache.log
 #     * None
 #
 #  (string value)
-#filesystem_store_metadata_file = <None>
+{%- if server.filesystem_store_metadata_file is defined %}
+filesystem_store_metadata_file = {{ server.get('filesystem_store_metadata_file', '/etc/glance/filesystem_store_metadata.json') }}
+{%- endif %}
 
 #
 # File access permissions for the image files.

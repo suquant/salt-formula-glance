@@ -610,7 +610,9 @@ filesystem_store_datadir = {{ server.get('filesystem_store_datadir', '/var/lib/g
 # system.  When show_multiple_locations is True the information in this
 # file will be returned with any location that is contained in this
 # store.
-#filesystem_store_metadata_file = None
+{%- if server.filesystem_store_metadata_file is defined %}
+filesystem_store_metadata_file = {{ server.get('filesystem_store_metadata_file', '/etc/glance/filesystem_store_metadata.json') }}
+{%- endif %}
 
 # ============ Swift Store Options =============================
 

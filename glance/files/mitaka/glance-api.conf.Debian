@@ -1161,7 +1161,9 @@ filesystem_store_datadir = {{ server.get('filesystem_store_datadir', '/var/lib/g
 # valid JSON object. The object should contain the keys 'id' and
 # 'mountpoint'. The value for both keys should be 'string'. (string
 # value)
-#filesystem_store_metadata_file = <None>
+{%- if server.filesystem_store_metadata_file is defined %}
+filesystem_store_metadata_file = {{ server.get('filesystem_store_metadata_file', '/etc/glance/filesystem_store_metadata.json') }}
+{%- endif %}
 
 # The required permission for created image file. In this way the user
 # other service used, e.g. Nova, who consumes the image could be the
