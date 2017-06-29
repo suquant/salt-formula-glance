@@ -217,6 +217,21 @@ glance_install_image_{{ image_name }}:
 
 {%- endfor %}
 
+{%- if server.filesystem_store_metadata_file is defined %}
+glance_filesystem_store_metadata_file:
+  file.managed:
+  - name: {{ server.get('filesystem_store_metadata_file', '/etc/glance/filesystem_store_metadata.json') }}
+  - mode: 644
+  - user: glance
+  - group: glance
+  - source: salt://glance/files/filesystem_store_metadata.json_template
+  - template: jinja
+  - require:
+    - pkg: glance_packages
+  - watch_in:
+    - service: glance_services
+{%- endif %}
+
 {%- for name, rule in server.get('policy', {}).iteritems() %}
 
 {%- if rule != None %}
