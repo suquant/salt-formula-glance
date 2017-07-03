@@ -8,8 +8,6 @@ from __future__ import absolute_import
 import logging
 import time
 
-# Import salt libs
-
 # Import OpenStack libs
 try:
     from keystoneclient.exceptions import \
@@ -247,3 +245,160 @@ def image_present(name, profile=None, visibility='public', protected=None,
                 'hasn\'t reached\n\t "status=active" yet.\n'
     log.debug('glance.image_present will return: {0}'.format(ret))
     return ret
+
+
+def image_import(name, profile=None, visibility='public', protected=False,
+                 location=None, import_from_format='raw', disk_format='raw',
+                 container_format='bare', tags=None,
+                 checksum=None, timeout=30):
+    """
+    Creates a task to import an image
+
+    This state checks if an image is present and, if not, creates a task
+    with import_type that would download an image from a remote location and
+    upload it to Glance.
+    After the task is created, its status is monitored. On success the state
+    would check that an image is present and return its ID.
+
+    *Important*: This state is supposed to work only with Glance V2 API as
+                 opposed to the image_present state that is compatible only
+                 with Glance V1.
+
+    :param name: Name of an image
+    :param profile: Authentication profile
+    :param visibility: Scope of image accessibility.
+                       Valid values: public, private, community, shared
+    :param protected: If true, image will not be deletable.
+    :param location: a URL where Glance can get the image data
+    :param import_from_format: Format to import the image from
+    :param disk_format: Format of the disk
+    :param container_format: Format of the container
+    :param tags: List of strings related to the image
+    :param checksum: Checksum of the image to import, it would be used to
+                     validate the checksum of a newly created image
+    :param timeout: Time to wait for an import task to succeed
+    """
+
+    ret = {'name': name,
+           'changes': {},
+           'result': True,
+           'comment': 'Image "{0}" already exists'.format(name)}
+    tags = tags or []
+
+    image, msg = _find_image(name, profile)
+    log.debug(msg)
+    if image:
+        return ret
+    elif image is False:
+        if __opts__['test']:
+            ret['result'] = None
+        else:
+            ret['result'] = False
+        ret['comment'] = msg
+        return ret
+    else:
+        if __opts__['test']:
+            ret['result'] = None
+            ret['comment'] = ("glanceng.image_import would create an image "
+                              "from {0}".format(location))
+            return ret
+
+        image_properties = {"container_format": container_format,
+                            "disk_format": disk_format,
+                            "name": name,
+                            "protected": protected,
+                            "tags": tags,
+                            "visibility": visibility
+                            }
+        task_params = {"import_from": location,
+                       "import_from_format": import_from_format,
+                       "image_properties": image_properties
+                       }
+
+        task = __salt__['glanceng.task_create'](
+            task_type='import', profile=profile,
+            input_params=task_params)
+        task_id = task['id']
+        log.debug('Created new task:\n{0}'.format(task))
+        ret['changes'] = {
+            name:
+                {
+                    'new':
+                        {
+                            'task_id': task_id
+                        },
+                    'old': None
+                }
+            }
+
+        # Wait for the task to complete
+        timer = timeout
+        while timer > 0:
+            if 'status' in task and task['status'] == 'success':
+                log.debug('Task {0} has successfully completed'.format(
+                    task_id))
+                break
+            elif 'status' in task and task['status'] == 'failure':
+                msg = "Task {0} has failed".format(task_id)
+                ret['result'] = False
+                ret['comment'] = msg
+                return ret
+            else:
+                timer -= 5
+                time.sleep(5)
+                existing_tasks = __salt__['glanceng.task_list'](profile)
+                if task_id not in existing_tasks:
+                    ret['result'] = False
+                    ret['comment'] += 'Created task {0} '.format(
+                        task_id) + ' vanished:\n' + msg
+                    return ret
+                else:
+                    task = existing_tasks[task_id]
+        if timer <= 0 and task['status'] != 'success':
+            ret['result'] = False
+            ret['comment'] = ('Task {0} did not reach state success before '
+                              'the timeout:\nLast status was '
+                              '"{1}".\n'.format(task_id, task['status']))
+            return ret
+
+        # The import task has successfully completed. Now, let's check that it
+        # created the image.
+        image, msg = _find_image(name, profile)
+        if not image:
+            ret['result'] = False
+            ret['comment'] = msg
+        else:
+            ret['changes'][name]['new']['image_id'] = image['id']
+            ret['changes'][name]['new']['image_status'] = image['status']
+            ret['comment'] = ("Image {0} was successfully created by task "
+                              "{1}".format(image['id'], task_id))
+            if checksum:
+                if image['status'] == 'active':
+                    if 'checksum' not in image:
+                        # Refresh our info about the image
+                        image = __salt__['glance.image_show'](image['id'])
+                    if 'checksum' not in image:
+                        if not __opts__['test']:
+                            ret['result'] = False
+                        else:
+                            ret['result'] = None
+                        ret['comment'] += (
+                            "No checksum available for this image:\n"
+                            "Image has status '{0}'.".format(image['status']))
+                    elif image['checksum'] != checksum:
+                        if not __opts__['test']:
+                            ret['result'] = False
+                        else:
+                            ret['result'] = None
+                        ret['comment'] += ("'checksum' is {0}, should be "
+                                           "{1}.\n".format(image['checksum'],
+                                                           checksum))
+                    else:
+                        ret['comment'] += (
+                            "'checksum' is correct ({0}).\n".format(checksum))
+                elif image['status'] in ['saving', 'queued']:
+                    ret['comment'] += (
+                        "Checksum will not be verified as image has not "
+                        "reached 'status=active' yet.\n")
+        log.debug('glance.image_present will return: {0}'.format(ret))
+        return ret

@@ -10,9 +10,12 @@ glance_client_packages:
 {%- for image_name, image in identity.image.iteritems() %}
 
 glance_openstack_image_{{ image_name }}:
-  glanceng.image_present:
-    - name: {{ image_name }}
+  glanceng.image_import:
+    - name: {{ image.get('name', image_name) }}
     - profile: {{ identity_name }}
+    {%- if image.import_from_format is defined %}
+    - import_from_format: {{ image.import_from_format }}
+    {%- endif %}
     {%- if image.visibility is defined %}
     - visibility: {{ image.visibility }}
     {%- endif %}
@@ -21,6 +24,21 @@ glance_openstack_image_{{ image_name }}:
     {%- endif %}
     {%- if image.location is defined %}
     - location: {{ image.location }}
+    {%- endif %}
+    {%- if image.tags is defined %}
+    - tags: {{ image.tags }}
+    {%- endif %}
+    {%- if image.disk_format is defined %}
+    - disk_format: {{ image.disk_format }}
+    {%- endif %}
+    {%- if image.container_format is defined %}
+    - container_format: {{ image.container_format }}
+    {%- endif %}
+    {%- if image.wait_timeout is defined %}
+    - timeout: {{ image.wait_timeout }}
+    {%- endif %}
+    {%- if image.checksum is defined %}
+    - checksum: {{ image.checksum }}
     {%- endif %}
 
 {%- endfor %}
