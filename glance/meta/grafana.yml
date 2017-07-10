@@ -4,10 +4,11 @@ dashboard:
     format: json
     template: glance/files/grafana_dashboards/glance_prometheus.json
   glance_influxdb:
-    datasource: influxdb 
+    datasource: influxdb
     format: json
     template: glance/files/grafana_dashboards/glance_influxdb.json
   main:
+    datasource: influxdb
     row:
       ost-control-plane:
         title: OpenStack Control Plane
