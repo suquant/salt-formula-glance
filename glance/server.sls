@@ -10,8 +10,9 @@ glance_user:
   user.present:
     - name: glance
     - home: /var/lib/glance
-    - uid: 302
-    - gid: 302
+    {# note: glance uid/gid values would not be evaluated after user is created. #}
+    - uid: {{ server.get('glance_uid') }}
+    - gid: {{ server.get('glance_gid') }}
     - shell: /bin/false
     - system: True
     - require_in:
@@ -20,7 +21,8 @@ glance_user:
 glance_group:
   group.present:
     - name: glance
-    - gid: 302
+    {# note: glance uid/gid values would not be evaluated after user is created. #}
+    - gid: {{ server.get('glance_gid') }}
     - system: True
     - require_in:
       - pkg: glance_packages

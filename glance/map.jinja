@@ -7,7 +7,9 @@
         'cors': {},
         'audit': {
           'enabled': false
-        }
+        },
+        'glance_uid': 302,
+        'glance_gid': 302
     },
     'RedHat': {
         'pkgs': ['openstack-glance', 'python-glanceclient','python-pycadf'],
@@ -16,7 +18,9 @@
         'cors': {},
         'audit': {
           'enabled': false
-        }
+        },
+        'glance_uid': 302,
+        'glance_gid': 302
     },
 }, merge=pillar.glance.get('server', {})) %}
 

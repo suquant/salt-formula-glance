@@ -17,6 +17,8 @@ Sample pillars
         enabled: true
         version: juno
         workers: 8
+        glance_uid: 302
+        glance_gid: 302
         policy:
           publicize_image:
             - "role:admin"
