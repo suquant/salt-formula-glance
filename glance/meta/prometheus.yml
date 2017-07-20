@@ -17,7 +17,7 @@ server:
 {%- endraw %}
       {%- set log_threshold = prometheus_server.get('alert', {}).get('GlanceErrorLogsTooHigh', {}).get('var', {}).get('threshold', 0.2 ) %}
       if: >-
-        sum(rate(log_messages{service="cinder",level=~"error|emergency|fatal"}[5m])) without (level) > {{ log_threshold }}
+        sum(rate(log_messages{service="glance",level=~"error|emergency|fatal"}[5m])) without (level) > {{ log_threshold }}
 {%- raw %}
       labels:
         severity: warning
