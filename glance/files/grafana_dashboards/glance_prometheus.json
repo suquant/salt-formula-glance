@@ -1,5 +1,8 @@
 {% raw %}
 {
+  "annotations": {
+    "list": []
+  },
   "description": "Monitors Glance cluster using Prometheus. Shows overall cluster processes and usage.",
   "editable": true,
   "gnetId": 315,
@@ -74,7 +77,7 @@
               "intervalFactor": 2,
               "legendFormat": "{{ service }}",
               "refId": "A",
-              "step": 20
+              "step": 60
             }
           ],
           "thresholds": "1,0",
@@ -162,7 +165,7 @@
               "intervalFactor": 2,
               "legendFormat": "per sec",
               "refId": "A",
-              "step": 20
+              "step": 60
             }
           ],
           "thresholds": "",
@@ -177,27 +180,6 @@
             }
           ],
           "valueName": "current"
-        }
-      ],
-      "repeat": null,
-      "repeatIteration": null,
-      "repeatRowId": null,
-      "showTitle": true,
-      "title": "Service Status",
-      "titleSize": "h6"
-    },
-    {
-      "collapse": false,
-      "height": "100px",
-      "panels": [
-        {
-          "content": "<br />\n<h3 align=\"center\"> Up </h3>",
-          "id": 3,
-          "links": [],
-          "mode": "html",
-          "span": 1,
-          "title": "",
-          "type": "text"
         },
         {
           "cacheTimeout": null,
@@ -260,11 +242,11 @@
               "intervalFactor": 2,
               "legendFormat": "",
               "refId": "A",
-              "step": 20
+              "step": 60
             }
           ],
           "thresholds": "",
-          "title": "API",
+          "title": "Glance API backends",
           "type": "singlestat",
           "valueFontSize": "80%",
           "valueMaps": [
@@ -337,11 +319,11 @@
               "intervalFactor": 2,
               "legendFormat": "",
               "refId": "A",
-              "step": 20
+              "step": 60
             }
           ],
           "thresholds": "",
-          "title": "Registry",
+          "title": "Glance Registry backends",
           "type": "singlestat",
           "valueFontSize": "80%",
           "valueMaps": [
@@ -352,22 +334,177 @@
             }
           ],
           "valueName": "current"
-        },
-        {
-          "content": "",
-          "id": 6,
-          "links": [],
-          "mode": "markdown",
-          "span": 5,
-          "title": "",
-          "type": "text"
         }
       ],
       "repeat": null,
       "repeatIteration": null,
       "repeatRowId": null,
       "showTitle": true,
-      "title": "Glance APIs",
+      "title": "Service Status",
+      "titleSize": "h6"
+    },
+    {
+      "collapse": false,
+      "height": "250",
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "prometheus",
+          "fill": 1,
+          "id": 19,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "sum(openstack_glance_http_response_times_rate{host=~\"^$host$\"})  by (http_status)",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "{{ http_status }}",
+              "refId": "A",
+              "step": 10
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Throughput",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "ops",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "dashLength": 10,
+          "dashes": false,
+          "datasource": "prometheus",
+          "fill": 1,
+          "id": 20,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 1,
+          "links": [],
+          "nullPointMode": "null",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "spaceLength": 10,
+          "span": 6,
+          "stack": false,
+          "steppedLine": false,
+          "targets": [
+            {
+              "expr": "max(openstack_glance_http_response_times_upper_90{host=~\"^$host$\"})  by (http_method)",
+              "format": "time_series",
+              "intervalFactor": 2,
+              "legendFormat": "{{ http_method }}",
+              "refId": "A",
+              "step": 10
+            }
+          ],
+          "thresholds": [],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Latency",
+          "tooltip": {
+            "shared": true,
+            "sort": 0,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "buckets": null,
+            "mode": "time",
+            "name": null,
+            "show": true,
+            "values": []
+          },
+          "yaxes": [
+            {
+              "format": "s",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": "0",
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        }
+      ],
+      "repeat": null,
+      "repeatIteration": null,
+      "repeatRowId": null,
+      "showTitle": true,
+      "title": "API Performances",
       "titleSize": "h6"
     },
     {
@@ -436,7 +573,7 @@
               "intervalFactor": 2,
               "legendFormat": "",
               "refId": "A",
-              "step": 20
+              "step": 60
             }
           ],
           "thresholds": "",
@@ -514,7 +651,7 @@
               "intervalFactor": 2,
               "legendFormat": "",
               "refId": "A",
-              "step": 20
+              "step": 60
             }
           ],
           "thresholds": "",
@@ -568,7 +705,7 @@
               "intervalFactor": 2,
               "legendFormat": "{{ visibility }}",
               "refId": "A",
-              "step": 2
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -669,7 +806,7 @@
               "intervalFactor": 2,
               "legendFormat": "",
               "refId": "A",
-              "step": 20
+              "step": 60
             }
           ],
           "thresholds": "",
@@ -747,7 +884,7 @@
               "intervalFactor": 2,
               "legendFormat": "",
               "refId": "A",
-              "step": 20
+              "step": 60
             }
           ],
           "thresholds": "",
@@ -801,7 +938,7 @@
               "intervalFactor": 2,
               "legendFormat": "{{ visibility }}",
               "refId": "A",
-              "step": 2
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -902,7 +1039,7 @@
               "intervalFactor": 2,
               "legendFormat": "",
               "refId": "A",
-              "step": 20
+              "step": 60
             }
           ],
           "thresholds": "",
@@ -980,7 +1117,7 @@
               "intervalFactor": 2,
               "legendFormat": "",
               "refId": "A",
-              "step": 20
+              "step": 60
             }
           ],
           "thresholds": "",
@@ -1034,7 +1171,7 @@
               "intervalFactor": 2,
               "legendFormat": "{{ visibility }}",
               "refId": "A",
-              "step": 2
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -1135,7 +1272,7 @@
               "intervalFactor": 2,
               "legendFormat": "",
               "refId": "A",
-              "step": 20
+              "step": 60
             }
           ],
           "thresholds": "",
@@ -1213,7 +1350,7 @@
               "intervalFactor": 2,
               "legendFormat": "",
               "refId": "A",
-              "step": 20
+              "step": 60
             }
           ],
           "thresholds": "",
@@ -1267,7 +1404,7 @@
               "intervalFactor": 2,
               "legendFormat": "{{ visibility }}",
               "refId": "A",
-              "step": 2
+              "step": 4
             }
           ],
           "thresholds": [],
@@ -1322,7 +1459,29 @@
     "glance"
   ],
   "templating": {
-    "list": []
+    "list": [
+      {
+        "allValue": null,
+        "current": {},
+        "datasource": "prometheus",
+        "hide": 0,
+        "includeAll": true,
+        "label": null,
+        "multi": true,
+        "name": "host",
+        "options": [],
+        "query": "label_values(openstack_glance_http_response_times_count,host)",
+        "refresh": 1,
+        "refresh_on_load": true,
+        "regex": "",
+        "sort": 1,
+        "tagValuesQuery": "",
+        "tags": [],
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      }
+    ]
   },
   "time": {
     "from": "now-1h",
@@ -1355,6 +1514,6 @@
   },
   "timezone": "browser",
   "title": "Glance",
-  "version": 2
+  "version": 3
 }
 {% endraw %}
