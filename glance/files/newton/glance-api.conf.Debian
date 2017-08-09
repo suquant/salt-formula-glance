@@ -415,7 +415,7 @@ show_multiple_locations = {{ server.get('show_multiple_locations', False) | lowe
 #
 #  (boolean value)
 #enable_v1_api = true
-enable_v1_api=False
+enable_v1_api=True
 
 #
 # Deploy the v2 OpenStack Images API.
@@ -469,7 +469,7 @@ enable_v2_api=True
 #     * enable_v1_api
 #
 #  (boolean value)
-#enable_v1_registry = true
+enable_v1_registry = True
 
 #
 # Deploy the v2 API Registry service.
