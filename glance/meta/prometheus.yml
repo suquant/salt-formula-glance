@@ -5,7 +5,7 @@ server:
   alert:
     GlanceAPIDown:
       if: >-
-        max(openstack_api_check_status{service=~"glance.+"}) by (service) == 0
+        max(openstack_api_check_status{service=~"glance.*"}) by (service) == 0
       for: 2m
       labels:
         severity: down
