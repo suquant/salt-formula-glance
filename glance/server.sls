@@ -1,4 +1,4 @@
-{%- from "glance/map.jinja" import server with context %}
+{%- from "glance/map.jinja" import server, system_cacerts_file with context %}
 {%- if server.enabled %}
 
 glance_packages:
@@ -97,6 +97,9 @@ glance_glare_service:
     - cmd: glance_load_metadatafs
   - watch:
     - file: /etc/glance/glance-glare.conf
+    {%- if server.message_queue.get('ssl',{}).get('enabled',False) %}
+    - file: rabbitmq_ca
+    {% endif %}
 
 {%- endif %}
 {%- endif %}
@@ -122,6 +125,9 @@ glance_services:
     - file: /etc/glance/glance-api.conf
     - file: /etc/glance/glance-registry.conf
     - file: /etc/glance/glance-api-paste.ini
+    {%- if server.message_queue.get('ssl',{}).get('enabled',False) %}
+    - file: rabbitmq_ca
+    {% endif %}
 
 glance_install_database:
   cmd.run:
@@ -257,5 +263,19 @@ rule_{{ name }}_absent:
 {%- endif %}
 
 {%- endfor %}
+
+{%- if server.message_queue.get('ssl',{}).get('enabled', False) %}
+rabbitmq_ca:
+{%- if server.message_queue.ssl.cacert is defined %}
+  file.managed:
+    - name: {{ server.message_queue.ssl.cacert_file }}
+    - contents_pillar: glance:server:message_queue:ssl:cacert
+    - mode: 0444
+    - makedirs: true
+{%- else %}
+  file.exists:
+   - name: {{ server.message_queue.ssl.get('cacert_file', system_cacerts_file) }}
+{%- endif %}
+{%- endif %}
 
 {%- endif %}
