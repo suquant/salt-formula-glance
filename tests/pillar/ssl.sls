@@ -3,6 +3,9 @@ include:
 
 glance:
   server:
+    database:
+      ssl:
+        enabled: True
     message_queue:
       port: 5671
       ssl:
