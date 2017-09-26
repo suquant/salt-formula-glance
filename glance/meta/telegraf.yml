@@ -8,5 +8,5 @@ agent:
         expected_code: 300
       glance-registry:
         address: "http://{{ server.bind.address|replace('0.0.0.0', '127.0.0.1') }}:{{ server.registry.port }}/"
-        expected_code: 300
+        expected_code: 401
 {%- endif %}
