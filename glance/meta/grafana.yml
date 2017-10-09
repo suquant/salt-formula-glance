@@ -7,7 +7,7 @@ dashboard:
     datasource: influxdb
     format: json
     template: glance/files/grafana_dashboards/glance_influxdb.json
-  main:
+  main_influxdb:
     datasource: influxdb
     row:
       ost-control-plane:
@@ -23,3 +23,18 @@ dashboard:
               cluster_status:
                 rawQuery: true
                 query: SELECT last(value) FROM cluster_status WHERE cluster_name = 'glance' AND environment_label = '$environment' AND $timeFilter GROUP BY time($interval) fill(null)
+  main_prometheus:
+    datasource: prometheus
+    row:
+      ost-control-plane:
+        title: OpenStack Control Plane
+        panel:
+          glance:
+            title: Glance
+            links:
+            - dashboard: Glance
+              title: Glance
+              type: dashboard
+            target:
+              cluster_status:
+                expr: avg(openstack_api_check_status{service=~"glance.*"})
