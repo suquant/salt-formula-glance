@@ -58,6 +58,11 @@ suites:
       pillars-from-files:
         glance.sls: tests/pillar/single_ceph.sls
 
+  - name: single_barbican
+    provisioner:
+      pillars-from-files:
+        glance.sls: tests/pillar/single_barbican.sls
+
   - name: single
     provisioner:
       pillars-from-files:

@@ -56,6 +56,8 @@ Sample pillars
           enabled: false
         api_limit_max: 100
         limit_param_default: 50
+        barbican:
+          enabled: true
 
 The pagination is controlled by the *api_limit_max* and *limit_param_default*
 parameters as shown above:
@@ -283,6 +285,17 @@ Please note: the show_multiple_locations option is deprecated since Newton and i
 
 This feature is convenient in a scenario when you have swift and rbd configured and want to
 benefit from rbd enhancements.
+
+
+Barbican integration glance
+---------------------------
+
+.. code-block:: yaml
+
+    glance:
+      server:
+          barbican:
+            enabled: true
 
 
 Client role
