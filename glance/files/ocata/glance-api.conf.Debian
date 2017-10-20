@@ -4517,3 +4517,7 @@ store_type_preference = {{ server.store_type_preference }}
 #  (string value)
 # Allowed values: qcow2, raw, vmdk
 #conversion_format = raw
+{%- if server.get('barbican', {}).get('enabled', False) %}
+[barbican]
+auth_endpoint = {{ server.identity.get('protocol', 'http') }}://{{ server.identity.get('host', 'localhost') }}:{{ server.identity.get('port', '5000') }}/v3
+{%- endif %}

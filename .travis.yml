@@ -21,6 +21,8 @@ env:
     - PLATFORM=trevorj/salty-whales:xenial SUITE=cluster
     - PLATFORM=trevorj/salty-whales:trusty SUITE=single_ceph
     - PLATFORM=trevorj/salty-whales:xenial SUITE=single_ceph
+    - PLATFORM=trevorj/salty-whales:trusty SUITE=single_barbican
+    - PLATFORM=trevorj/salty-whales:xenial SUITE=single_barbican
     - PLATFORM=trevorj/salty-whales:trusty SUITE=single
     - PLATFORM=trevorj/salty-whales:xenial SUITE=single
 
