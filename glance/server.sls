@@ -98,10 +98,10 @@ glance_glare_service:
   - watch:
     - file: /etc/glance/glance-glare.conf
     {%- if server.message_queue.get('ssl',{}).get('enabled',False) %}
-    - file: rabbitmq_ca
+    - file: rabbitmq_ca_glance_server
     {% endif %}
     {%- if server.database.get('ssl',{}).get('enabled',False)  %}
-    - file: mysql_ca
+    - file: mysql_ca_glance_server
     {% endif %}
 
 {%- endif %}
@@ -129,10 +129,10 @@ glance_services:
     - file: /etc/glance/glance-registry.conf
     - file: /etc/glance/glance-api-paste.ini
     {%- if server.message_queue.get('ssl',{}).get('enabled',False) %}
-    - file: rabbitmq_ca
+    - file: rabbitmq_ca_glance_server
     {% endif %}
     {%- if server.database.get('ssl',{}).get('enabled',False)  %}
-    - file: mysql_ca
+    - file: mysql_ca_glance_server
     {% endif %}
 
 glance_install_database:
@@ -271,7 +271,7 @@ rule_{{ name }}_absent:
 {%- endfor %}
 
 {%- if server.message_queue.get('ssl',{}).get('enabled', False) %}
-rabbitmq_ca:
+rabbitmq_ca_glance_server:
 {%- if server.message_queue.ssl.cacert is defined %}
   file.managed:
     - name: {{ server.message_queue.ssl.cacert_file }}
@@ -285,7 +285,7 @@ rabbitmq_ca:
 {% endif %}
 
 {%- if server.database.get('ssl',{}).get('enabled',False)  %}
-mysql_ca:
+mysql_ca_glance_server:
 {%- if server.database.ssl.cacert is defined %}
   file.managed:
     - name: {{ server.database.ssl.cacert_file }}
